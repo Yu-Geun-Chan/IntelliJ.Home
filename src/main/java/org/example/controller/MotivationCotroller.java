@@ -8,11 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MotivationCotroller {
-    int lastMotivationId;
+    private int lastMotivationId = 3;
     List<Motivation> motivations;
 
     public MotivationCotroller() {
-        lastMotivationId = 3;
         this.motivations = new ArrayList<>();
     }
 
@@ -39,35 +38,34 @@ public class MotivationCotroller {
         System.out.println("== Motivation list ==");
 
         if (motivations.isEmpty()) {
-            System.out.println("작성된 게시글이 없습니다.");
-            return;
-        }
-
-        String searchWord = cmd.substring("motivation list".length()).trim();
-
-        List<Motivation> forPrintMotivations = motivations;
-
-        if (!searchWord.isEmpty()) {
-            System.out.printf("검색어 : %s\n", searchWord);
-            forPrintMotivations = new ArrayList<>();
-            return;
-        }
-
-        for (Motivation motivation : motivations) {
-            if (motivation.getBody().contains(searchWord)) {
-               forPrintMotivations.add(motivation);
-            }
-        }
-
-        if (forPrintMotivations.isEmpty()) {
             System.out.println("작성된 Motivation이 없습니다.");
             return;
         }
 
+        List<Motivation> forPrintMotivations = motivations;
+
+        String searchWord = cmd.substring("motivation list".length()).trim();
+
+        if (!searchWord.isEmpty()) {
+            System.out.printf("검색어 : %s\n", searchWord);
+            forPrintMotivations = new ArrayList<>();
+
+            for (Motivation motivation : motivations) {
+                if (motivation.getBody().contains(searchWord)) {
+                    forPrintMotivations.add(motivation);
+                }
+            }
+
+            if (forPrintMotivations.isEmpty()) {
+                System.out.println("해당 Motivation이 없습니다.");
+                return;
+            }
+        }
+
+        System.out.println("   번호   /     작성일    /     내용    /     출처    /");
+        System.out.println("=".repeat(50));
         for (int i = forPrintMotivations.size() - 1; i >= 0; i--) {
             Motivation motivation = forPrintMotivations.get(i);
-            System.out.println("   번호   /     작성일    /     내용    /     출처    /");
-            System.out.println("=".repeat(50));
             if (motivation.getRegDate().split(" ")[0].equals(motivation.getRegDate().split(" ")[0])) {
                 System.out.printf("  %d   /    %s     /    %s     /     %s    \n", motivation.getId(), motivation.getRegDate().split(" ")[1], motivation.getBody(), motivation.getSource());
             } else
@@ -176,4 +174,11 @@ public class MotivationCotroller {
 
         System.out.printf("%d번 Motivation은 수정되었습니다.\n", foundMotivation.getId());
     }
+    public void makeTestData() {
+        System.out.println("테스트용 Motivation이 생성되었습니다.");
+        for (int i = 1; i <= 3; i++) {
+            motivations.add(new Motivation(i, Util.getNow(), Util.getNow(), "내용" + i, "출처" + i));
+        }
+    }
 }
+
